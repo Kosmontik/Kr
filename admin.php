@@ -90,7 +90,7 @@ require_once('link.php');
                         <input type="text" class="form-control" name="link_get[<?= $id ?>]" id="link_get<?= $id ?>" value="<?= $link_get ?>" onchange="activateButton()">
                     </div>
                     <div class="col-1">
-                        <input type="checkbox" id="checkboxes[<?= $id ?>]" name="checkboxes<?= $id ?>"  class="del">
+                        <input type="checkbox" id="checkboxes[<?= $id ?>]" name="checkboxes[<?= $id ?>]" class="del">
                     </div>
                 </div>
                 <?php

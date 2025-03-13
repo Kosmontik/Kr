@@ -95,5 +95,5 @@ if(isset($_POST['saveButton'])){
         }
     }
 }
-echo 'СПАСИТЕ!!!'
+
 ?>
