@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once('link.php');
 ?>
 <!DOCTYPE html>
@@ -53,8 +53,8 @@ require_once('link.php');
                 </div>
             </div>
             <button type="submit" class="btn btn-primary" value="Создать пункт меню">Создать пункт меню</button>
-            </div>
-        </form>
+    </div>
+    </form>
     </div>
     <div class="container">
         <div class="row">
@@ -66,57 +66,60 @@ require_once('link.php');
     <div class="container">
         <form action="admin_logic.php" method="POST">
             <?php
-                require_once('link.php');
-                $query_get = "SELECT * FROM menu";
-                $result_get = $linkBase->query($query_get);
+            require_once('link.php');
+            $query_get = "SELECT * FROM menu";
+            $result_get = $linkBase->query($query_get);
 
-                while($row = $result_get->fetch_assoc()){
-                    $title_get = $row['title'];
-                    $link_get = $row['link'];
-                    $id = $row["id"];
-                ?>
+            while ($row = $result_get->fetch_assoc()) {
+                $title_get = $row['title'];
+                $link_get = $row['link'];
+                $id = $row["id"];
+            ?>
                 <div class="row mt-2">
-                    <div class="col12">
-                        <label for="title_get<?= $id ?>">Заголовок:</label>
-                    </div>
-                    <div class="col-4">
-                        <input type="text" class="form-control" name="title_get[<?= $id ?>]" id="title_get<?= $id ?>" value="<?= $title_get ?>" onchange="activateButton()">
-                    </div>
+                    <div class="main row mt-2  "> <!--bg-body-secondary -->
+                        <div class="col-1">
+                            <label for="title_get<?= $id ?>">Заголовок:</label>
+                        </div>
+                       
+                        <div class="col-4">
+                            <input type="text" class="form-control" name="title_get[<?= $id ?>]" id="title_get<?= $id ?>" value="<?= $title_get ?>" onchange="activateButton()">
+                        </div>
 
-                    <div class="col-1">
-                        <label for="link_get<?= $id ?>">Cсылка:</label>
-                    </div>
-                    <div class="col-4">
-                        <input type="text" class="form-control" name="link_get[<?= $id ?>]" id="link_get<?= $id ?>" value="<?= $link_get ?>" onchange="activateButton()">
-                    </div>
-                    <div class="col-1">
-                        <input type="checkbox" id="checkboxes[<?= $id ?>]" name="checkboxes[<?= $id ?>]" class="del">
-                    </div>
-                </div>
-                <?php
-                }
-                $linkBase->close();
-                ?>
-                <div class="row mt-2 justify-content-between">
-                    <div class="col-2">
-                        <input type="submit" name="saveButton" value="Сохранить" disabled="disabled" id="saveButton">
-                    </div>
-                    <div class="col-2">
-                    <input type="submit" name="delete_btn" value="Удалить">
+                        <div class="col-1">
+                            <label for="link_get<?= $id ?>">Cсылка:</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" class="form-control" name="link_get[<?= $id ?>]" id="link_get<?= $id ?>" value="<?= $link_get ?>" onchange="activateButton()">
+                        </div>
+                        <div class="col-1">
+                            <input type="checkbox" id="checkboxes[<?= $id ?>]" name="checkboxes[<?= $id ?>]" class="del">
+                        </div>
                     </div>
                 </div>
-            </form>
-        </div>
-        <script>
-            function activateButton(){
-                document.getElementById('saveButton').disabled = false;
+            <?php
             }
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="js/script.js"></script>
-<?php
-require_once('footer.php');
-?>
+            $linkBase->close();
+            ?>
+            <div class="row mt-2 justify-content-between">
+                <div class="col-2">
+                    <input type="submit" name="saveButton" value="Сохранить" disabled="disabled" id="saveButton">
+                </div>
+                <div class="col-2">
+                    <input type="submit" name="delete_btn" value="Удалить">
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        function activateButton() {
+            document.getElementById('saveButton').disabled = false;
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <?php
+    require_once('footer.php');
+    ?>
 </body>
 
 </html>
