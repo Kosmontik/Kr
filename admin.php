@@ -46,74 +46,169 @@ require_once('link.php');
                     <input type="text" class="form-control" name="title" id="title" required>
                 </div>
                 <div class="col-1">
-                    <label for="link" class="form-label">Заголовок:</label>
+                    <label for="link" class="form-label">Ссылка:</label>
                 </div>
                 <div class="col-5">
                     <input type="text" class="form-control" name="link" id="link" required>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary" value="Создать пункт меню">Создать пункт меню</button>
+            <button name="addButton" type="submit" class="btn btn-primary" value="Создать пункт меню">Создать пункт меню</button>
     </div>
     </form>
     </div>
     <div class="container">
         <div class="row">
             <div class="col12">
-                <h3>Редактировать пункт меню</h3>
+                <h3 class="text-danger">Редактировать пункт меню</h3>
             </div>
         </div>
     </div>
     <div class="container">
         <form action="admin_logic.php" method="POST">
-            <?php
-            require_once('link.php');
-            $query_get = "SELECT * FROM menu";
-            $result_get = $linkBase->query($query_get);
+            <div id="menu-items">
+                <?php
+                require_once('link.php');
+                $query_get = "SELECT * FROM `menu` ORDER by `sort_order` ASC";
+                $result_get = $linkBase->query($query_get);
 
-            while ($row = $result_get->fetch_assoc()) {
-                $title_get = $row['title'];
-                $link_get = $row['link'];
-                $id = $row["id"];
-            ?>
-                <div class="row mt-2">
-                    <div class="main row mt-2  "> <!--bg-body-secondary -->
-                        <div class="col-1">
-                            <label for="title_get<?= $id ?>">Заголовок:</label>
-                        </div>
-                       
-                        <div class="col-4">
-                            <input type="text" class="form-control" name="title_get[<?= $id ?>]" id="title_get<?= $id ?>" value="<?= $title_get ?>" onchange="activateButton()">
-                        </div>
+                $menuItems = [];
 
-                        <div class="col-1">
-                            <label for="link_get<?= $id ?>">Cсылка:</label>
-                        </div>
-                        <div class="col-4">
-                            <input type="text" class="form-control" name="link_get[<?= $id ?>]" id="link_get<?= $id ?>" value="<?= $link_get ?>" onchange="activateButton()">
-                        </div>
-                        <div class="col-1">
-                            <input type="checkbox" id="checkboxes[<?= $id ?>]" name="checkboxes[<?= $id ?>]" class="del">
+                while ($row = $result_get->fetch_assoc()) {
+                    $menuItems[] = $row;
+                    $title_get = $row['title'];
+                    $link_get = $row['link'];
+                    $id = $row["id"];
+                ?>
+                    <div class="row mt-2 menu-item" data-id="<?= $id ?>" draggable="true">
+                        <div class="row mt-2 main">
+                            <div class="col-1 drag-handle" style="cursor: grab;">
+                                <i class="fas fa-arrows-alt"></i>
+                            </div>
+                            <div class="col-1">
+                                <label for="title_get<?= $id ?>">Заголовок:</label>
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="title_get[<?= $id ?>]"
+                                    id="title_get<?= $id ?>" value="<?= $title_get ?>" onchange="activateButton()">
+                            </div>
+
+                            <div class="col-1">
+                                <label for="link_get<?= $id ?>">Ссылка:</label>
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="link_get[<?= $id ?>]"
+                                    id="link_get<?= $id ?>" value="<?= $link_get ?>" onchange="activateButton()">
+                            </div>
+                            <div class="col-1">
+                                <input type="checkbox" name="checkboxes[<?= $id ?>]" id="checkboxes[<?= $id ?>]"
+                                    class="del">
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php
-            }
-            $linkBase->close();
-            ?>
+                <?php
+                }
+                $linkBase->close();
+                ?>
+            </div>
+            <input type="hidden" name="reordered_ids" id="reordered_ids" value="">
             <div class="row mt-2 justify-content-between">
                 <div class="col-2">
                     <input type="submit" name="saveButton" value="Сохранить" disabled="disabled" id="saveButton">
                 </div>
                 <div class="col-2">
-                    <input type="submit" name="delete_btn" value="Удалить">
+                    <input type="submit" name="deleteButton" value="Удалить">
                 </div>
             </div>
         </form>
     </div>
+
+    <style>
+        .menu-item {
+            border: 1px solid #ccc;
+            margin-bottom: 5px;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .drag-handle {
+            cursor: grab;
+        }
+
+        .dragging {
+            opacity: 0.5;
+        }
+    </style>
+
     <script>
         function activateButton() {
             document.getElementById('saveButton').disabled = false;
         }
+    
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItemsContainer = document.getElementById('menu-items');
+            const menuItems = document.querySelectorAll('.menu-item');
+            const reorderedIdsInput = document.getElementById('reordered_ids');
+
+            let draggedItem = null;
+
+            // Drag and Drop Event Listeners
+            menuItems.forEach(item => {
+                item.addEventListener('dragstart', dragStart);
+                item.addEventListener('dragover', dragOver);
+                item.addEventListener('dragenter', dragEnter);
+                item.addEventListener('dragleave', dragLeave);
+                item.addEventListener('dragend', dragEnd);
+                item.addEventListener('drop', dragDrop);
+            });
+
+            function dragStart(e) {
+                draggedItem = this;
+                e.dataTransfer.setData('text/plain', this.dataset.id);
+                this.classList.add('dragging');
+            }
+
+            function dragOver(e) {
+                e.preventDefault();
+            }
+
+            function dragEnter(e) {
+                e.preventDefault();
+            }
+
+            function dragLeave(e) {}
+
+            function dragEnd() {
+                this.classList.remove('dragging');
+            }
+
+            function dragDrop(e) {
+                e.preventDefault();
+                if (this !== draggedItem) {
+                    let sourceIndex = Array.from(menuItemsContainer.children).indexOf(draggedItem);
+                    let targetIndex = Array.from(menuItemsContainer.children).indexOf(this);
+
+                    if (sourceIndex < targetIndex) {
+                        menuItemsContainer.insertBefore(draggedItem, this.nextElementSibling);
+                    } else {
+                        menuItemsContainer.insertBefore(draggedItem, this);
+                    }
+                    activateButton();
+                }
+                updateOrderInput();
+            }
+
+            function updateOrderInput() {
+                const orderedIds = Array.from(menuItemsContainer.children)
+                    .map(item => item.dataset.id)
+                    .join(',');
+                reorderedIdsInput.value = orderedIds;
+            }
+
+
+
+            updateOrderInput(); // Initial call to set the order on page load
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>

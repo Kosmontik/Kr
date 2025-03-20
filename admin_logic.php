@@ -1,12 +1,5 @@
-<?php
+<?php 
 require_once('link.php');
-// $query_get = "SELECT * FROM menu";
-// $result_get = $linkBase->query($query_get);
-// while($row = $result_get->fetch_assoc()){
-//     $title_get = $row['title'];
-//     $link_get = $row['link'];
-//     $id = $row["id"];
-// }
 
 if(!empty($_POST['title'])&&!empty($_POST['link'])){
     $title=$_POST['title'];
@@ -14,29 +7,21 @@ if(!empty($_POST['title'])&&!empty($_POST['link'])){
 
     $filename=pathinfo($link,PATHINFO_FILENAME);
     $filename=strtolower(str_replace(' ','_',$filename)).'.php';
-    $filecontent="<?php\n
-    require_once('link.php');\n
-    require_once('header.php');\n
-?>\n
-<h1>".$title."</h1>\n
-<?php\n
-require_once('footer.php');
-?>";
-file_put_contents($filename,$filecontent);
+    $filecontent="<?php\nrequire_once('link.php');\nrequire_once('header.php');\n?>\n<h1>".$title."</h1>\n<?php\nrequire_once('footer.php');\n?>";
+    file_put_contents($filename,$filecontent);
 
-$stmt=$linkBase->prepare("INSERT INTO `menu`(title, link) VALUES (?,?)");
-$stmt->bind_param("ss",$title,$filename);
-if($stmt->execute()){
-    header("Location: /admin.php");
-    exit;
-}
-else{
-    echo "Ошибка при создании пункта меню : ".$stmt->error;
-}
-$stmt->close();
+    $stmt = $linkBase->prepare("INSERT INTO menu (title, link, sort_order) SELECT ?, ?, (SELECT COALESCE(MAX(sort_order), 0) + 1 FROM menu)");
+    $stmt->bind_param("ss",$title,$filename);
+    if($stmt->execute()){
+        header("Location: /admin.php");
+        exit;
+    } else {
+        echo "Ошибка при создании пункта меню: ".$stmt->error;
+    }
+    $stmt->close();
 }
 
-if(isset($_POST['delete_btn'])){
+if(isset($_POST['deleteButton'])){
     $deleteIds=array_filter($_POST['checkboxes'],function($value){
         return $value;
     });
@@ -96,4 +81,36 @@ if(isset($_POST['saveButton'])){
     }
 }
 
+if (isset($_POST['reordered_ids'])) {
+    $ids = explode(",", $_POST['reordered_ids']);
+    foreach ($ids as $i => $id) {
+        $sort_order = $i + 1;
+        $stmt = $linkBase->prepare("UPDATE menu SET sort_order = ? WHERE id = ?");
+        if ($stmt) {
+            $stmt->bind_param("ii", $sort_order, $id);
+            if ($stmt->execute()) {
+                header('Location: admin.php');
+                
+            }
+            else{
+                echo "Ошибка обновления сортировки для ID $id: " . $stmt->error;
+            }
+            $stmt->close();
+        }
+    }
+    exit;
+}
 ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
