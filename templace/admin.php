@@ -1,5 +1,5 @@
 <?php
-require_once('link.php');
+require_once('../config/link.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +8,7 @@ require_once('link.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админ панель</title>
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -22,10 +22,10 @@ require_once('link.php');
                 <div class="collapse navbar-collapse" id="navbarNav"></div>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" id="register" href="index.php">Выход</a>
+                        <a class="nav-link" id="register" href="../index.php">Выход</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="register" href="admin.php">Админ панель</a>
+                        <a class="nav-link" id="register" href="../templace/admin.php">Админ панель</a>
                     </li>
                 </ul>
             </div>
@@ -33,7 +33,7 @@ require_once('link.php');
     </div>
     <div class="container">
         <div class="row">
-            <div class="col12">
+            <div class="col-1">
                 <h3>Создать пункт меню</h3>
             </div>
         </div>
@@ -64,10 +64,10 @@ require_once('link.php');
         </div>
     </div>
     <div class="container">
-        <form action="admin_logic.php" method="POST">
+        <form action="../templace/admin_logic.php" method="POST">
             <div id="menu-items">
                 <?php
-                require_once('link.php');
+                require_once('../config/link.php');
                 $query_get = "SELECT * FROM `menu` ORDER by `sort_order` ASC";
                 $result_get = $linkBase->query($query_get);
 
@@ -210,8 +210,8 @@ require_once('link.php');
             updateOrderInput(); // Initial call to set the order on page load
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+    <script src="../js/script.js"></script>
     <?php
     require_once('footer.php');
     ?>

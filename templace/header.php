@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
 </head>
 <body class="d-flex align-items-center flex-column min-vh-100 ">
 <?php 
@@ -26,13 +26,13 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <?php
 
-$query = "SELECT * FROM menu";
+$query = "SELECT * FROM menu order by sort_order ASC ";
 $result = $linkBase->query($query);
 if($result->num_rows > 0){
     echo '<ul class="navbar-nav">';
     while($row = $result->fetch_assoc()){
         echo '<li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="'. $row['link'] .'">' . $row['title'] . '</a>
+            <a class="nav-link active" aria-current="page" href="../'. $row['link'] .'">' . $row['title'] . '</a>
             </li>';
     }
 }
@@ -40,10 +40,10 @@ $linkBase->close();
 
 ?>
               <li class="nav-link mx-3">
-                        <a class="nav-link" id="register" href="admin.php">Админ Панель</a>
+                        <a class="nav-link" id="register" href="templace/admin.php">Админ Панель</a>
                     </li>
                     <li class="nav-link">
-                        <a class="nav-link" id="login"  href="index.php">Выйти</a> 
+                        <a class="nav-link" id="login"  href="../index.php">Выйти</a> 
                     </li>
                 </ul>
             </div>
@@ -62,13 +62,13 @@ $linkBase->close();
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
               <?php 
-              $query = "SELECT * FROM menu";
+              $query = "SELECT * FROM menu order by sort_order ASC";
               $result = $linkBase->query($query);
               if($result->num_rows > 0){
                   echo '<ul class="navbar-nav">';
                   while($row = $result->fetch_assoc()){
                       echo '<li class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="'. $row['link'] .'">' . $row['title'] . '</a>
+                          <a class="nav-link active" aria-current="page" href="../'. $row['link'] .'">' . $row['title'] . '</a>
                           </li>';
                   }
               }
@@ -76,7 +76,10 @@ $linkBase->close();
               
               ?>
                     <li class="nav-link">
-                        <a class="nav-link" id="login" data-bs-toggle="modal" data-bs-target="#modal" href="#">Войти</a> <!-- Updated this line -->
+                        <a class="nav-link" id="login" data-bs-toggle="modal" data-bs-target="#modal" href="#">Войти</a>
+                    </li>
+                    <li>
+                    <a class="nav-link"  href="../index.php">Выйти</a>
                     </li>
                 </ul>
             </div>
@@ -113,7 +116,7 @@ $linkBase->close();
         </div>
     </div>
 
-<script src="js/bootstrap.bundle.js"></script>
+<script src="../js/bootstrap.bundle.js"></script>
 <script>
 let avtoriz=document.getElementById('avtoriz');
 let modal=document.getElementById('modal');
